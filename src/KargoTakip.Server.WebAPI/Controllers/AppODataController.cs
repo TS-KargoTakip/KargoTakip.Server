@@ -19,11 +19,11 @@ public class AppODataController(
     {
         ODataConventionModelBuilder builder = new();
         builder.EnableLowerCamelCase();
-        builder.EntitySet<KargoGetAllQueryResponse>("kargolarim");
+        builder.EntitySet<KargoGetAllQueryResponse>("kargolar");
         return builder.GetEdmModel();
     }
 
-    [HttpGet("kargolarim")]
+    [HttpGet("kargolar")]
     public async Task<IQueryable<KargoGetAllQueryResponse>> GetAllEmployees(CancellationToken cancellationToken)
     {
         var response = await sender.Send(new KargoGetAllQuery(), cancellationToken);

@@ -57,7 +57,7 @@ namespace KargoTakip.Server.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Kargolarim");
+                    b.ToTable("Kargolarim", (string)null);
                 });
 
             modelBuilder.Entity("KargoTakip.Server.Domain.Users.AppUser", b =>
@@ -143,7 +143,7 @@ namespace KargoTakip.Server.Infrastructure.Migrations
                         .IsUnique()
                         .HasFilter("[UserName] IS NOT NULL");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
@@ -163,44 +163,11 @@ namespace KargoTakip.Server.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", (string)null);
                 });
 
             modelBuilder.Entity("KargoTakip.Server.Domain.Kargolarim.Kargo", b =>
                 {
-                    b.OwnsOne("KargoTakip.Server.Domain.Kargolarim.Address", "TeslimAdresi", b1 =>
-                        {
-                            b1.Property<Guid>("KargoId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<string>("City")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<string>("FullAddress")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<string>("Mahalle")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<string>("Street")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<string>("Town")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.HasKey("KargoId");
-
-                            b1.ToTable("Kargolarim");
-
-                            b1.WithOwner()
-                                .HasForeignKey("KargoId");
-                        });
-
                     b.OwnsOne("KargoTakip.Server.Domain.Kargolarim.Person", "Alici", b1 =>
                         {
                             b1.Property<Guid>("KargoId")
@@ -228,7 +195,7 @@ namespace KargoTakip.Server.Infrastructure.Migrations
 
                             b1.HasKey("KargoId");
 
-                            b1.ToTable("Kargolarim");
+                            b1.ToTable("Kargolarim", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("KargoId");
@@ -261,7 +228,7 @@ namespace KargoTakip.Server.Infrastructure.Migrations
 
                             b1.HasKey("KargoId");
 
-                            b1.ToTable("Kargolarim");
+                            b1.ToTable("Kargolarim", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("KargoId");
@@ -280,7 +247,40 @@ namespace KargoTakip.Server.Infrastructure.Migrations
 
                             b1.HasKey("KargoId");
 
-                            b1.ToTable("Kargolarim");
+                            b1.ToTable("Kargolarim", (string)null);
+
+                            b1.WithOwner()
+                                .HasForeignKey("KargoId");
+                        });
+
+                    b.OwnsOne("KargoTakip.Server.Domain.Kargolarim.Address", "TeslimAdresi", b1 =>
+                        {
+                            b1.Property<Guid>("KargoId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("City")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("FullAddress")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("Mahalle")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("Street")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("Town")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("KargoId");
+
+                            b1.ToTable("Kargolarim", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("KargoId");

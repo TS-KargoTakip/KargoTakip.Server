@@ -1,8 +1,8 @@
-﻿using KargoTakip.Server.Domain.Users;
+﻿using GenericRepository;
+using KargoTakip.Server.Domain.Users;
 using KargoTakip.Server.Infrastructure.Context;
 using KargoTakip.Server.Infrastructure.Options;
 using KargoTakip.Server.Infrastructure.Services;
-using GenericRepository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -39,10 +39,8 @@ public static class InfrastructureRegistrar
 
         services.Configure<JwtOptions>(configuration.GetSection("Jwt"));
         services.ConfigureOptions<JwtOptionsSetup>();
-        services.Configure<KeycloakConfiguration>(configuration.GetSection("KeycloakConfiguration"));
 
         services.AddScoped<KeycloakService>();
-        //services.AddScoped<IJwtProvider, KeycloakService>();           
 
         services.Scan(opt => opt
         .FromAssemblies(typeof(InfrastructureRegistrar).Assembly)

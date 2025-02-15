@@ -20,6 +20,7 @@ internal sealed class KargoConfiguration : IEntityTypeConfiguration<Kargo>
             .Property(p => p.KargoTipi)
             .HasConversion(tip => tip.Value, value => KargoTipiEnum.FromValue(value));
         });
-        builder.Property(p => p.KargoDurum).HasConversion(durum => durum.Value, value => KargoDurumEnum.FromValue(value));
+
+        builder.HasQueryFilter(x => !x.IsDeleted);
     }
 }

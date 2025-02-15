@@ -16,6 +16,7 @@ public sealed class KargoGetAllQueryResponse : EntityDto
     public string TeslimAdresiTown { get; set; } = default!;
     public string KargoTipiName { get; set; } = default!;
     public int Agirlik { get; set; }
+    public string KargoDurumValue { get; set; } = default!;
     public string KargoDurumName { get; set; } = default!;
 }
 
@@ -38,7 +39,8 @@ internal sealed class KargoGetAllQueryHandler(
                             KargoTipiName = entity.KargoInformation.KargoTipi.Name,
                             TeslimAdresiCity = entity.TeslimAdresi.City,
                             TeslimAdresiTown = entity.TeslimAdresi.Town,
-                            KargoDurumName = entity.KargoDurum.Name,
+                            KargoDurumValue = ((int)entity.KargoDurum).ToString(),
+                            KargoDurumName = entity.KargoDurum.GetDisplayName(),
                             CreateAt = entity.CreateAt,
                             DeleteAt = entity.DeleteAt,
                             Id = entity.Id,

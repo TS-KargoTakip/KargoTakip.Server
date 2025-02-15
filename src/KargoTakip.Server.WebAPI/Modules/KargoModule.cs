@@ -1,4 +1,5 @@
-﻿using KargoTakip.Server.Application.Kargolarim;
+﻿using KargoTakip.Server.Application.Kargolar;
+using KargoTakip.Server.Application.Kargolarim;
 using MediatR;
 using TS.Result;
 
@@ -18,5 +19,14 @@ public static class KargoModule
             })
             .Produces<Result<string>>()
             .WithName("KargoCreate");
+
+        group.MapDelete("{id}",
+            async (Guid id, ISender sender, CancellationToken cancellatioNToken) =>
+            {
+                var response = await sender.Send(new KargoDeleteCommand(id), cancellatioNToken);
+                return response.IsSuccessful ? Results.Ok(response) : Results.InternalServerError(response);
+            })
+            .Produces<Result<string>>()
+            .WithName("KargoDelete");
     }
 }

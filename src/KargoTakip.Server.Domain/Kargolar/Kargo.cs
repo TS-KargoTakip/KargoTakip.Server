@@ -1,6 +1,7 @@
 ﻿using KargoTakip.Server.Domain.Abstractions;
+using KargoTakip.Server.Domain.Kargolarim;
 
-namespace KargoTakip.Server.Domain.Kargolarim;
+namespace KargoTakip.Server.Domain.Kargolar;
 public sealed class Kargo : Entity
 {
     public Person Gonderen { get; set; } = default!;

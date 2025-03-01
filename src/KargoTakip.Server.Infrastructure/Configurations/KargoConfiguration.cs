@@ -1,4 +1,5 @@
-﻿using KargoTakip.Server.Domain.Kargolarim;
+﻿using KargoTakip.Server.Domain.Kargolar;
+using KargoTakip.Server.Domain.Kargolarim;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

@@ -1,4 +1,5 @@
 ﻿using GenericRepository;
+using KargoTakip.Server.Domain.Kargolar;
 using KargoTakip.Server.Domain.Kargolarim;
 using MediatR;
 using TS.Result;

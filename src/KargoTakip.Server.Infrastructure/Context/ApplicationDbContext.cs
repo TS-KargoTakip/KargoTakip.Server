@@ -9,20 +9,13 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace KargoTakip.Server.Infrastructure.Context;
-
 internal sealed class ApplicationDbContext : IdentityDbContext<AppUser, IdentityRole<Guid>, Guid>, IUnitOfWork
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
-
-    public ApplicationDbContext(
-        DbContextOptions options,
-        IHttpContextAccessor httpContextAccessor) : base(options)
+    public ApplicationDbContext(DbContextOptions options) : base(options)
     {
-        _httpContextAccessor = httpContextAccessor;
     }
 
     public DbSet<Kargo> Kargolarim { get; set; }
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
@@ -37,24 +30,13 @@ internal sealed class ApplicationDbContext : IdentityDbContext<AppUser, Identity
     {
         var entries = ChangeTracker.Entries<Entity>();
 
-        var httpContext = _httpContextAccessor.HttpContext;
-        if (httpContext == null)
-        {
-            // HttpContext yoksa, kullanıcı bilgisi olmadan devam et
-            return base.SaveChangesAsync(cancellationToken);
-        }
-
-        var userIdString = httpContext
-            .User
-            .Claims
-            .FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier)?
-            .Value;
-
-        if (userIdString == null)
-        {
-            // Kullanıcı bilgisi yoksa, kullanıcı bilgisi olmadan devam et
-            return base.SaveChangesAsync(cancellationToken);
-        }
+        HttpContextAccessor httpContextAccessor = new();
+        string userIdString = httpContextAccessor
+        .HttpContext!
+        .User
+        .Claims
+        .First(p => p.Type == ClaimTypes.NameIdentifier)?
+        .Value!;
 
         Guid userId = Guid.Parse(userIdString);
 
@@ -73,16 +55,16 @@ internal sealed class ApplicationDbContext : IdentityDbContext<AppUser, Identity
                 if (entry.Property(p => p.IsDeleted).CurrentValue == true)
                 {
                     entry.Property(p => p.DeleteAt)
-                        .CurrentValue = DateTimeOffset.Now;
+                    .CurrentValue = DateTimeOffset.Now;
                     entry.Property(p => p.DeleteUserId)
-                        .CurrentValue = userId;
+                    .CurrentValue = userId;
                 }
                 else
                 {
                     entry.Property(p => p.UpdateAt)
                         .CurrentValue = DateTimeOffset.Now;
                     entry.Property(p => p.UpdateUserId)
-                        .CurrentValue = userId;
+                    .CurrentValue = userId;
                 }
             }
 

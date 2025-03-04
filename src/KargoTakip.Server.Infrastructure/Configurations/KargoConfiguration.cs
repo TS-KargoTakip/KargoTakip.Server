@@ -36,14 +36,10 @@ internal sealed class KargoConfiguration : IEntityTypeConfiguration<Kargo>
         {
             builder
             .Property(p => p.KargoTipi)
-            .HasConversion(tip => tip.Value, // Enum değerini veritabanına kaydet
-            value => KargoTipiEnum.FromValue(value)); // Veritabanındaki değeri enum'a dönüştür
-            builder.Property(p => p.Agirlik).HasColumnType("decimal(18,2)");
+            .HasConversion(
+                tip => (int)tip,
+                value => (KargoTipiEnum)value);
         });
-        
-        builder.Property(p => p.KargoDurum)
-            .HasConversion(durum => durum.Value, // Enum değerini veritabanına kaydet
-            value => KargoDurumEnum.FromValue(value)); // Veritabanındaki değeri enum'a dönüştür
 
         builder.HasQueryFilter(x => !x.IsDeleted);
     }

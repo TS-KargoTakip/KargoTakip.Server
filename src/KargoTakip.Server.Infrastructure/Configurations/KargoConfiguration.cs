@@ -1,4 +1,5 @@
-﻿using KargoTakip.Server.Domain.Kargolarim;
+﻿using KargoTakip.Server.Domain.Kargolar;
+using KargoTakip.Server.Domain.Kargolarim;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -39,8 +40,11 @@ internal sealed class KargoConfiguration : IEntityTypeConfiguration<Kargo>
             value => KargoTipiEnum.FromValue(value)); // Veritabanındaki değeri enum'a dönüştür
             builder.Property(p => p.Agirlik).HasColumnType("decimal(18,2)");
         });
+        
         builder.Property(p => p.KargoDurum)
             .HasConversion(durum => durum.Value, // Enum değerini veritabanına kaydet
             value => KargoDurumEnum.FromValue(value)); // Veritabanındaki değeri enum'a dönüştür
+
+        builder.HasQueryFilter(x => !x.IsDeleted);
     }
 }

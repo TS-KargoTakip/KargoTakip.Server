@@ -1,24 +1,23 @@
 ﻿using FluentValidation;
 using GenericRepository;
+using KargoTakip.Server.Domain.Kargolar;
 using KargoTakip.Server.Domain.Kargolarim;
 using Mapster;
 using MediatR;
 using TS.Result;
 
-namespace KargoTakip.Server.Application.Kargolarim;
-public sealed record KargoCreateCommand(
+namespace KargoTakip.Server.Application.Kargolar;
+
+public sealed record KargoUpdateCommand(
+    Guid Id,
     Person Gonderen,
     Person Alici,
     Address TeslimAdresi,
     KargoInformationDto KargoInformation) : IRequest<Result<string>>;
 
-public sealed record KargoInformationDto(
-    int KargoTipiValue,
-    int Agirlik);
-
-public sealed class KargoCreateCommandValidator : AbstractValidator<KargoCreateCommand>
+public sealed class KargoUpdateCommandValidator : AbstractValidator<KargoUpdateCommand>
 {
-    public KargoCreateCommandValidator()
+    public KargoUpdateCommandValidator()
     {
         RuleFor(p => p.Gonderen.FirstName).NotEmpty().WithMessage("Geçerli bir gönderen adı girin");
         RuleFor(p => p.Gonderen.LastName).NotEmpty().WithMessage("Geçerli bir gönderen soyadı girin");
@@ -34,28 +33,40 @@ public sealed class KargoCreateCommandValidator : AbstractValidator<KargoCreateC
     }
 }
 
-internal sealed class KargoCreateCommandHandler(
+internal sealed class KargoUpdateCommandHandler(
     IKargoRepository kargoRepository,
     IUnitOfWork unitOfWork
-    ) : IRequestHandler<KargoCreateCommand, Result<string>>
+    ) : IRequestHandler<KargoUpdateCommand, Result<string>>
 {
-    public async Task<Result<string>> Handle(KargoCreateCommand request, CancellationToken cancellationToken)
+    public async Task<Result<string>> Handle(KargoUpdateCommand request, CancellationToken cancellationToken)
     {
-        Kargo kargo = request.Adapt<Kargo>();
-        KargoInformation kargoInformation = new(
-            KargoTipiEnum.FromValue(request.KargoInformation.KargoTipiValue), request.KargoInformation.Agirlik);
+        Kargo? kargo = await kargoRepository.FirstOrDefaultAsync(p => p.Id == request.Id, cancellationToken);
+        if (kargo is null)
+        {
+            return Result<string>.Failure("Kargo bulunamadı");
+        }
+
+        if (kargo.KargoDurum != KargoDurumEnum.Bekliyor)
+        {
+            return Result<string>.Failure("Sadece bekleyen kargoları güncelleyebilirsiniz");
+        }
+
+        request.Adapt(kargo);
+        KargoInformation kargoInformation = new()
+        {
+            KargoTipi = KargoTipiEnum.FromValue(request.KargoInformation.KargoTipiValue),
+            Agirlik = request.KargoInformation.Agirlik
+        };
         kargo.KargoInformation = kargoInformation;
-        kargo.KargoDurum = KargoDurumEnum.Bekliyor;
         kargo.Alici = request.Alici;
         kargo.Gonderen = request.Gonderen;
-        kargoRepository.Add(kargo);
+        kargoRepository.Update(kargo);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
-
 
         //to do: burada mail veya sms gönderme işlemleri yapılacak
         //to do: ileride notification içinde domain event kullanabiliriz
 
-        return "Kargo başarıyla kaydedildi";
+        return "Kargo başarıyla güncellendi";
     }
 }

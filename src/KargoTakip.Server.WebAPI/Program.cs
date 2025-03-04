@@ -51,9 +51,6 @@ builder.Services.AddAuthentication(options =>
 }).AddJwtBearer();
 builder.Services.AddAuthorization();
 
-//builder.Services.AddKeycloakWebApiAuthentication(builder.Configuration);
-//builder.Services.AddAuthorization().AddKeycloakAuthorization(builder.Configuration);
-
 var app = builder.Build();
 
 app.MapOpenApi();
@@ -67,7 +64,8 @@ app.UseCors(x => x
 .AllowAnyHeader()
 .AllowCredentials()
 .AllowAnyMethod()
-.SetIsOriginAllowed(t => true));
+.SetIsOriginAllowed(t => true)
+.SetPreflightMaxAge(TimeSpan.FromMinutes(10)));
 
 app.RegisterRoutes();
 

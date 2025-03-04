@@ -1,7 +1,7 @@
 ﻿using System.Security.Claims;
 using GenericRepository;
 using KargoTakip.Server.Domain.Abstractions;
-using KargoTakip.Server.Domain.Kargolarim;
+using KargoTakip.Server.Domain.Kargolar;
 using KargoTakip.Server.Domain.Users;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
